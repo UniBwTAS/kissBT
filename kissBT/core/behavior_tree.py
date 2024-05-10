@@ -109,9 +109,6 @@ class ControlNode(Node):
 
 
 class Sequence(ControlNode):
-    def __init__(self, name):
-        super().__init__(name)
-
     def run(self):
         for child in self.children:
             child.run()
@@ -125,9 +122,6 @@ class Sequence(ControlNode):
 
 
 class Selector(ControlNode):
-    def __init__(self, name):
-        super().__init__(name)
-
     def run(self):
         for child in self.children:
             child.run()
@@ -141,9 +135,6 @@ class Selector(ControlNode):
 
 
 class ParallelSequence(ControlNode):
-    def __init__(self, name):
-        super().__init__(name)
-
     def run(self):
         status_list = []
         for child in self.children:
@@ -161,9 +152,6 @@ class ParallelSequence(ControlNode):
 # =============================================================================
 
 class LeafNode(Node):
-    def __init__(self, name):
-        super().__init__(name)
-
     def attach_blackboard(self, blackboard):
         self.blackboard = blackboard
 
@@ -176,19 +164,14 @@ class LeafNode(Node):
         string = f"{self.get_indent_string(indent)}[{Status.get_symbol(self.status)}] {wrapper[0]}{self.name}{wrapper[1]}{running_flag}\n"
         return string[:-1] if indent == 0 else string
 
-class Action(LeafNode):
-    def __init__(self, name):
-        super().__init__(name)
 
+class Action(LeafNode):
     @abstractmethod
     def run(self):
         pass
 
 
 class Condition(LeafNode):
-    def __init__(self, name):
-        super().__init__(name)
-
     @abstractmethod
     def run(self):
         pass
@@ -239,7 +222,6 @@ class Inverter(Decorator):
             self.status = Status.SUCCESS
         elif self.child.status == Status.RUNNING:
             self.status = Status.RUNNING
-
 
 # =============================================================================
 # --- Blackboard --------------------------------------------------------------
