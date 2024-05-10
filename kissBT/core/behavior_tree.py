@@ -206,6 +206,10 @@ class Decorator(Node):
     def run(self):
         self.child.run()
 
+    def reset(self):
+        self.status = Status.NONE
+        self.child.reset()
+
     def set_child(self, child):
         self.child = child
         if self.blackboard:
