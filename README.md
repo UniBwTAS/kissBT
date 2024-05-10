@@ -1,4 +1,5 @@
-# Simple Behavior Tree
+# kissBT: A Very Basic Simple Behavior Tree Implementation
+
 
 This is a very basic Behavior Tree implementation for Python. 
 In case you're searching for a BT library with rich features, we recommend you take a look at [py_trees](https://py-trees.readthedocs.io/en/devel/index.html).
