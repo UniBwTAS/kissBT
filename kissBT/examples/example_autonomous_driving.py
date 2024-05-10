@@ -8,7 +8,7 @@ Small Behavior Tree example for autonomous driving.
 A vehicle is driving along a road. 
 In case a static obstacle blocks the way, the ego vehicle dodges.
 The dodging maneuver can take some time and results in a successful completion or a collision.
-In task is completed when the ego vehicle has no remaining distance between itself and the goal.
+The task is completed when the ego vehicle has no remaining distance between itself and the goal.
 """
 
 # =============================================================================

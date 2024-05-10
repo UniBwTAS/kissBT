@@ -7,5 +7,4 @@ setup(
     url='https://github.com/UniBwTAS/kissBT',
     author='Thomas Steinecker',
     author_email='thomas.steinecker@unibw.de',
-    install_requires=[],
 )
