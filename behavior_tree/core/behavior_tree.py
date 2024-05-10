@@ -107,12 +107,6 @@ class ControlNode(Node):
             string += child.get_string_tree(indent)
         return string[:-1] if indent == ASCII_TREE_INDENT else string
 
-    def __repr__(self):
-        string = f"{self.__name__}\n"
-        string += f"Name   :: {self.name}\n"
-        string += f"Status :: {self.status}"
-        return string
-
 
 class Sequence(ControlNode):
     def __init__(self, name):
