@@ -1,4 +1,4 @@
-# kissBT: A Very Basic Simple Behavior Tree Implementation
+# kissBT: A Very Basic Behavior Tree Implementation
 
 
 This is a very basic Behavior Tree implementation for Python. 
