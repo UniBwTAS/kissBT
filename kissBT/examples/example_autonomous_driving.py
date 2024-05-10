@@ -1,4 +1,4 @@
-from behavior_tree.core.behavior_tree import *
+from kissBT.core.behavior_tree import *
 import random
 import time
 

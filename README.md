@@ -4,9 +4,24 @@ This is a very basic Behavior Tree implementation for Python.
 In case you're searching for a BT library with rich features, we recommend you take a look at [py_trees](https://py-trees.readthedocs.io/en/devel/index.html).
 However, if you want a basic library where you can easily understand the overall behavior or want to change some behavior/code without digging too deep, you might be served well here.
 
+### Installation
+
+Install kissBT via the following command:
+
+```bash
+pip3 install git+https://github.com/UniBwTAS/kissBT.git#egg=kissBT
+```
+
+or
+
+```bash
+python3 -m pip install git+https://github.com/UniBwTAS/kissBT.git#egg=kissBT
+```
+
+
 ### Included
 
-The [implementation](behavior_tree/core/behavior_tree.py) provides:
+The [implementation](kissBT/core/behavior_tree.py) provides:
 
 - Nodes
   - Control nodes
@@ -36,7 +51,7 @@ The [implementation](behavior_tree/core/behavior_tree.py) provides:
 
 ### Example
 
-You can find a small example [here](behavior_tree/examples/example_autonomous_driving.py).
+You can find a small example [here](kissBT/examples/example_autonomous_driving.py).
 
 ### Final Words
 
