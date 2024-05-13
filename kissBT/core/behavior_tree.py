@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 # --- Parameters --------------------------------------------------------------
 # =============================================================================
 
-ASCII_TREE_INDENT = 5   # Indentation for each level within the behavior tree representation
+ASCII_TREE_INDENT = 6   # Indentation for each level within the behavior tree representation
 
 # =============================================================================
 # --- Status ------------------------------------------------------------------

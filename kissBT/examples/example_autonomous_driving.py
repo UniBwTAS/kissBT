@@ -31,7 +31,7 @@ class RandomStatus(Condition):
         # Add code if you need some things done at initialization
 
     def run(self):
-        # Return either success, failure or running
+        # Return either success or failure
         self.status = random.choice([Status.SUCCESS, Status.FAILURE])
 
 
