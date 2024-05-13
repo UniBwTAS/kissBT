@@ -1,7 +1,7 @@
-# kissBT: A Very Basic Behavior Tree Implementation
+# kissBT: A Very Basic Behavior Tree Framework
 
 
-This is a very basic Behavior Tree implementation for Python. 
+This is a very basic Behavior Tree Framework for Python. 
 In case you're searching for a BT library with rich features, we recommend you take a look at [py_trees](https://py-trees.readthedocs.io/en/devel/index.html).
 However, if you want a basic library where you can easily understand the overall behavior or want to change some behavior/code without digging too deep, you might be served well here.
 
@@ -49,6 +49,17 @@ The [implementation](kissBT/core/behavior_tree.py) provides:
 ```
 
 - Blackboard
+  - Activity monitoring
+
+```
+>> WRITE [FollowLane].......... distance_to_goal : 1.0
+>> READ  [FollowLane].......... distance_to_goal
+>> READ  [<<NoMember>>]........ distance_to_goal
+>> READ  [FollowLane].......... distance_to_goal
+>> WRITE [FollowLane].......... distance_to_goal : 0.0
+>> READ  [FollowLane].......... distance_to_goal
+>> WRITE [FollowLane].......... goal_reached : True
+```
 
 ### Example
 

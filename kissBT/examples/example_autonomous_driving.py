@@ -46,10 +46,11 @@ class DodgeStaticObstacle(Action):
         if random_number in [1, 2]:
             self.status = Status.SUCCESS
         elif random_number in [3, 4]:
-            self.blackboard.data["distance_to_goal"] -= 0.5
+            # Do not use augmented assignment operators, e.g. "-=", as the write process becomes "invisible" for the activity logging.
+            self.blackboard["distance_to_goal"] = self.blackboard["distance_to_goal"] - 0.5
             self.status = Status.RUNNING
         else:
-            self.blackboard.data["failure_info"] = "Collision occurred!"
+            self.blackboard["failure_info"] = "Collision occurred!"
             self.status = Status.FAILURE
 
 
@@ -60,9 +61,10 @@ class FollowLane(Action):
 
     def run(self):
         # Return either success, failure or running
-        self.blackboard.data["distance_to_goal"] -= 1
-        if self.blackboard.data["distance_to_goal"] <= 0:
+        self.blackboard["distance_to_goal"] = self.blackboard["distance_to_goal"] - 1
+        if self.blackboard["distance_to_goal"] <= 0:
             self.status = Status.SUCCESS
+            self.blackboard["goal_reached"] = True
         else:
             self.status = Status.RUNNING
 
@@ -75,7 +77,8 @@ root = Sequence("ROOT")
 
 # Attach blackboard
 my_blackboard = Blackboard()
-my_blackboard.data["distance_to_goal"] = 5.0
+my_blackboard["distance_to_goal"] = 5.0
+my_blackboard["goal_reached"] = False
 root.attach_blackboard(my_blackboard)
 
 sel_dodge = Selector("Dodging")
@@ -97,11 +100,23 @@ root.append(act_follow)
 while root.status not in [Status.FAILURE, Status.SUCCESS]:
     root.tick()
     print(root.get_string_tree())
-    print("Remaining distance to goal :: ", my_blackboard.data["distance_to_goal"], "\n")
+    print("Remaining distance to goal :: ", my_blackboard["distance_to_goal"], "\n")
     time.sleep(1)
 
 if root.status == Status.FAILURE:
-    print(f"Mission failed!\nReason :: {my_blackboard.data['failure_info']}")
+    print(f"Mission failed!\nReason :: {my_blackboard['failure_info']}")
 else:
     print("Goal reached!")
+
+# =============================================================================
+# --- Activity Steam ----------------------------------------------------------
+# =============================================================================
+
+print("\nACTIVITY STREAM")
+
+# If you only want the write-accesses and key to be "distance_to_goal" and client "FollowLane", uncomment the following line
+# print(my_blackboard.get_activity_str(mode="write", client="FollowLane", key="distance_to_goal"))
+
+print(my_blackboard.get_activity_str())
+
 

@@ -45,7 +45,14 @@ class Node(ABC):
     def __init__(self, name):
         self.name = name
         self.status = Status.NONE
-        self.blackboard = None
+        self._blackboard = None
+
+    @property
+    def blackboard(self):
+        if self._blackboard is None:
+            raise RuntimeError("No blackboard assigned!")
+        self._blackboard.client = self.name
+        return self._blackboard
 
     @staticmethod
     def get_indent_string(indent):
@@ -82,11 +89,11 @@ class ControlNode(Node):
 
     def append(self, child):
         self.children.append(child)
-        if self.blackboard:
-            child.attach_blackboard(self.blackboard)
+        if self._blackboard is not None:
+            child.attach_blackboard(self._blackboard)
 
     def attach_blackboard(self, blackboard):
-        self.blackboard = blackboard
+        self._blackboard = blackboard
         [child.attach_blackboard(blackboard) for child in self.children]
 
     def run(self):
@@ -153,7 +160,7 @@ class ParallelSequence(ControlNode):
 
 class LeafNode(Node):
     def attach_blackboard(self, blackboard):
-        self.blackboard = blackboard
+        self._blackboard = blackboard
 
     def run(self):
         pass
@@ -195,12 +202,13 @@ class Decorator(Node):
 
     def set_child(self, child):
         self.child = child
-        if self.blackboard:
-            self.child.attach_blackboard(self.blackboard)
+        if self._blackboard is not None:
+            self.child.attach_blackboard(self._blackboard)
 
     def attach_blackboard(self, blackboard):
-        self.blackboard = blackboard
-        self.child.attach_blackboard(blackboard)
+        self._blackboard = blackboard
+        if self.child is not None:
+            self.child.attach_blackboard(blackboard)
 
     def get_string_tree(self, indent=0):
         running_flag = " <-- RUNNING" if self.status == Status.RUNNING else ""
@@ -227,7 +235,43 @@ class Inverter(Decorator):
 # --- Blackboard --------------------------------------------------------------
 # =============================================================================
 
-class Blackboard:
-    def __init__(self):
-        self.data = {}
+class Blackboard(dict):
+    NO_MEMBER = "<<NoMember>>"
+    N_CELL_LEN = 25
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.client = Blackboard.NO_MEMBER
+        self.activity = []
+        self.activity_len = 1000
+
+    def get_activity_str(self, max_len=None, mode=None, key=None, client=None, expand=False):
+        results = [ele for ele in self.activity if (
+                    (key is None or key == ele["key"] == key) and (mode is None or mode == ele["mode"]) and (
+                        ele["client"] == client or client is None))]
+        string = ""
+        for result in results:
+            if result['mode'] == 'write':
+                value_str = f"{result['value']}" if result['value'].__class__.__name__ in ["bool", "int", "float", "str", "None"] or expand else "<<NoExpansion>>"
+                string += f">> {Colors.OKBLUE}{result['mode'].upper()}{Colors.ENDC} [{Colors.BOLD}{result['client']}{Colors.ENDC}]{max(0, Blackboard.N_CELL_LEN - len(result['client'])) * '.'} {result['key']} : {value_str}\n"
+            else:
+                string += f">> {Colors.OKGREEN}{result['mode'].upper()}{Colors.ENDC}  [{Colors.BOLD}{result['client']}{Colors.ENDC}]{max(0, Blackboard.N_CELL_LEN - len(result['client'])) * '.'} {result['key']}\n"
+        return string
+
+    def prune_activity(self):
+        self.activity = self.activity[-self.activity_len:]
+
+    def __getitem__(self, key):
+        self.activity.append({"client": self.client, "mode": "read", "key": key})
+        self.client = Blackboard.NO_MEMBER
+        self.prune_activity()
+        return super().__getitem__(key)
+
+    def __setitem__(self, key, value):
+        self.activity.append({"client": self.client, "mode": "write", "key": key, "value": value})
+        self.client = Blackboard.NO_MEMBER
+        self.prune_activity()
+        super().__setitem__(key, value)
+
+
 
